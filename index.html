@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Travel Planner</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #1A8B9D, #FF6F61);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow-x: hidden;
+      color: #333;
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: float 15s infinite ease-in-out;
+    }
+
+    .particle:nth-child(1) { width: 20px; height: 20px; top: 10%; left: 15%; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 15px; height: 15px; top: 60%; left: 80%; animation-delay: 2s; }
+    .particle:nth-child(3) { width: 25px; height: 25px; top: 40%; left: 30%; animation-delay: 4s; }
+    .particle:nth-child(4) { width: 10px; height: 10px; top: 80%; left: 50%; animation-delay: 6s; }
+    .particle:nth-child(5) { width: 18px; height: 18px; top: 20%; left: 70%; animation-delay: 8s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+      50% { transform: translateY(-50px) scale(1.2); opacity: 0.6; }
+    }
+
+    header {
+      width: 100%;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 2.8em;
+      color: #fff;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1em;
+      padding: 8px 15px;
+      border-radius: 20px;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    nav ul li a:hover {
+      background: #FFD700;
+      color: #1A8B9D;
+      transform: scale(1.05);
+    }
+
+    .tagline {
+      color: #fff;
+      font-size: 1.3em;
+      margin-top: 10px;
+      text-align: center;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 3px solid #FFD700;
+      animation: typing 3s steps(40, end) forwards, blink 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: #FFD700; }
+    }
+
+    .search-container {
+      margin: 40px 0;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      border: 2px solid transparent;
+      animation: borderGlow 3s infinite ease-in-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+    }
+
+    @keyframes borderGlow {
+      0% { border-color: #1A8B9D; }
+      50% { border-color: #FF6F61; }
+      100% { border-color: #1A8B9D; }
+    }
+
+    .search-container input {
+      padding: 12px 20px;
+      font-size: 1em;
+      border: 2px solid #FFD700;
+      border-radius: 10px;
+      outline: none;
+      width: 300px;
+      background: rgba(255, 255, 255, 0.9);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-container input:focus {
+      border-color: #FF6F61;
+      box-shadow: 0 0 10px rgba(255, 111, 97, 0.5);
+    }
+
+    .search-container button {
+      padding: 12px 30px;
+      background: #FFD700;
+      color: #1A8B9D;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .search-container button:hover {
+      background: #FF6F61;
+      color: #fff;
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(255, 111, 97, 0.5);
+    }
+
+    .result {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      max-width: 700px;
+      text-align: left;
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+      border: 2px solid transparent;
+      animation: borderGlow 3s infinite ease-in-out;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .result:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .result h2 {
+      color: #1A8B9D;
+      margin-top: 0;
+      font-size: 1.9em;
+      border-bottom: 3px solid #FFD700;
+      padding-bottom: 5px;
+    }
+
+    .result p {
+      font-size: 1em;
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+
+    .result ul {
+      margin-top: 10px;
+      padding-left: 25px;
+      list-style-type: square;
+      color: #333;
+    }
+
+    .result a {
+      color: #FF6F61;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .result a:hover {
+      color: #1A8B9D;
+      text-decoration: underline;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.2);
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      nav ul {
+        gap: 10px;
+      }
+
+      nav ul li a {
+        font-size: 0.9em;
+        padding: 6px 12px;
+      }
+
+      .search-container {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .search-container input {
+        width: 100%;
+      }
+
+      .search-container button {
+        width: 100%;
+      }
+
+      header h1 {
+        font-size: 2em;
+      }
+
+      .tagline {
+        font-size: 1.1em;
+      }
+
+      .result {
+        padding: 20px;
+        max-width: 90%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+
+      .tagline {
+        font-size: 1em;
+      }
+
+      nav ul li a {
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <header>
+    <h1>Travel Planner</h1>
+    <nav>
+      <ul>
+        <li><a href="destinations.html">Top Destinations</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="tagline">Plan Your Perfect Journey with Travel Planner!</div>
+
+  <div class="search-container">
+    <input type="text" id="stateInput" placeholder="Type a state or union territory name">
+    <button onclick="searchState()">Search</button>
+  </div>
+
+  <div class="result" id="resultBox">
+    <h2 id="stateName"></h2>
+    <p><strong>Capital:</strong> <span id="capital"></span></p>
+    <p><strong>Geographical Location:</strong> <span id="location"></span></p>
+    <p><strong>Best Time to Visit:</strong> <span id="bestTime"></span></p>
+    <p><strong>Recommended Days to Visit:</strong> <span id="days"></span></p>
+    <p><strong>Description:</strong> <span id="description"></span></p>
+    <p><strong>Top 10 Places to Visit:</strong></p>
+    <ul id="topPlaces"></ul>
+    <p><strong>Plan Your Trip:</strong></p>
+    <ul>
+      <li><a id="makeMyTripLink" href="#" target="_blank">MakeMyTrip</a></li>
+      <li><a id="yatraLink" href="#" target="_blank">Yatra.com</a></li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    © 2025 Travel Planner by Srinjay Ghosh
+  </div>
+
+  <script>
+    const states = {
+      "andhra pradesh": {
+        capital: "Amaravati",
+        location: "Southeastern coast of India, bordered by Telangana, Chhattisgarh, Tamil Nadu, Karnataka, and the Bay of Bengal.",
+        bestTime: "October to March",
+        days: "5-7 days",
+        description: "Andhra Pradesh, on India’s southeastern coast, is a cultural gem with ancient temples like Tirupati and stunning beaches in Visakhapatnam. Known for its rich history, the state offers the majestic Belum Caves, scenic Araku Valley, and the architectural marvel of Lepakshi. Its vibrant festivals and spicy cuisine make it a must-visit destination for travelers seeking diverse experiences.",
+        topPlaces: [
+          "Tirupati - Famous for Sri Venkateswara Temple.",
+          "Visakhapatnam - Known for its beaches and Araku Valley.",
+          "Amaravati - Ancient Buddhist site with historic stupas.",
+          "Srisailam - Home to Mallikarjuna Swamy Temple.",
+          "Vijayawada - Known for Kanaka Durga Temple.",
+          "Lepakshi - Renowned for Veerabhadra Temple.",
+          "Gandikota - Called the 'Grand Canyon of India'.",
+          "Belum Caves - One of the largest cave systems.",
+          "Kurnool - Features historic forts.",
+          "Horsley Hills - A serene hill station."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/andhra_pradesh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-andhra-pradesh"
+      },
+      "arunachal pradesh": {
+        capital: "Itanagar",
+        location: "Northeastern tip of India, sharing borders with Bhutan, China, and Myanmar.",
+        bestTime: "October to April",
+        days: "6-8 days",
+        description: "Arunachal Pradesh, nestled in India’s northeastern tip, is a paradise of untouched landscapes and vibrant tribal cultures. Home to the serene Tawang Monastery and lush Ziro Valley, it offers breathtaking views of the Eastern Himalayas. Adventure seekers can explore Sela Pass and Namdapha National Park, while cultural enthusiasts will love the state’s colorful festivals and warm hospitality.",
+        topPlaces: [
+          "Tawang - Famous for Tawang Monastery.",
+          "Ziro - Known for lush valleys.",
+          "Itanagar - Features Ita Fort.",
+          "Roing - Offers scenic beauty.",
+          "Bomdila - Known for monasteries.",
+          "Namdapha National Park - A biodiversity hotspot.",
+          "Pasighat - Famous for river rafting.",
+          "Dirang - Offers hot springs.",
+          "Sela Pass - A high-altitude pass.",
+          "Bhalukpong - Known for adventure."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/arunachal_pradesh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-arunachal-pradesh"
+      },
+      "assam": {
+        capital: "Dispur",
+        location: "Northeastern India, bordered by Bhutan, Arunachal Pradesh, Nagaland, Manipur, Meghalaya, Tripura, Mizoram, and West Bengal.",
+        bestTime: "November to March",
+        days: "5-7 days",
+        description: "Assam, in India’s Northeast, is renowned for its sprawling tea gardens and the mighty Brahmaputra River. Kaziranga National Park, a UNESCO site, shelters the one-horned rhino, while Majuli, the world’s largest river island, offers cultural immersion. Visit Guwahati’s Kamakhya Temple and explore Dibrugarh’s tea estates for a blend of nature, culture, and history in Assam’s vibrant landscape.",
+        topPlaces: [
+          "Kaziranga National Park - Famous for rhinos.",
+          "Guwahati - Home to Kamakhya Temple.",
+          "Majuli - World’s largest river island.",
+          "Dibrugarh - Known for tea estates.",
+          "Sivasagar - Features Ahom monuments.",
+          "Hajo - A pilgrimage site.",
+          "Manas National Park - A UNESCO site.",
+          "Jorhat - The cultural hub.",
+          "Tezpur - Known for ancient ruins.",
+          "Silchar - Offers natural attractions."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/assam-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-assam"
+      },
+      "bihar": {
+        capital: "Patna",
+        location: "Eastern India, bordered by Nepal, Uttar Pradesh, Jharkhand, and West Bengal.",
+        bestTime: "October to March",
+        days: "4-6 days",
+        description: "Bihar, in Eastern India, is a cradle of history with profound spiritual significance. Bodh Gaya, where Buddha attained enlightenment, and Nalanda’s ancient university ruins draw global visitors. Patna’s vibrant streets, Rajgir’s hot springs, and Vaishali’s Buddhist heritage add depth. Famous for Madhubani art and sacred Gaya, Bihar offers a rich tapestry of culture, history, and spirituality.",
+        topPlaces: [
+          "Bodh Gaya - Buddha’s enlightenment site.",
+          "Patna - Features Patna Sahib.",
+          "Nalanda - Ancient university ruins.",
+          "Rajgir - Known for hot springs.",
+          "Vaishali - Buddhist significance.",
+          "Sasaram - Sher Shah Suri’s tomb.",
+          "Gaya - A pilgrimage site.",
+          "Madhubani - Renowned for Mithila art.",
+          "Munger - Known for its fort.",
+          "Bhagalpur - Famous for silk."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/bihar-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-bihar"
+      },
+      "chhattisgarh": {
+        capital: "Raipur",
+        location: "Central India, bordered by Madhya Pradesh, Maharashtra, Telangana, Odisha, Jharkhand, and Uttar Pradesh.",
+        bestTime: "October to March",
+        days: "5-7 days",
+        description: "Chhattisgarh, in Central India, is a hidden gem with dense forests, cascading waterfalls, and rich tribal heritage. The majestic Chitrakote Falls, often called India’s Niagara, and Bastar’s vibrant tribal culture captivate visitors. Explore ancient Sirpur ruins, Kanger Valley’s caves, and the serene Mainpat hill station for a blend of nature, history, and cultural immersion in this offbeat destination.",
+        topPlaces: [
+          "Chitrakote Falls - India’s widest waterfall.",
+          "Bastar - Known for tribal culture.",
+          "Raipur - Features museums.",
+          "Jagdalpur - Gateway to waterfalls.",
+          "Kanger Valley - Offers caves.",
+          "Dhamtari - Known for tribal heritage.",
+          "Bhoramdeo Temple - Historic site.",
+          "Sirpur - Ancient ruins.",
+          "Mainpat - A hill station.",
+          "Tirathgarh Falls - Picturesque waterfall."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/chhattisgarh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-chhattisgarh"
+      },
+      "goa": {
+        capital: "Panaji",
+        location: "Western coast of India, bordered by Maharashtra, Karnataka, and the Arabian Sea.",
+        bestTime: "November to February",
+        days: "4-6 days",
+        description: "Goa, on India’s western coast, is a tropical paradise famous for its golden beaches, vibrant nightlife, and Portuguese heritage. Baga and Palolem beaches offer water sports, while Old Goa’s Basilica of Bom Jesus showcases colonial charm. Dudhsagar Falls and Anjuna’s flea market add adventure and culture, making Goa a perfect blend of relaxation and excitement for travelers.",
+        topPlaces: [
+          "Baga Beach - Known for water sports.",
+          "Basilica of Bom Jesus - UNESCO site.",
+          "Fort Aguada - Historic fort.",
+          "Anjuna - Famous for flea market.",
+          "Palolem Beach - Serene shores.",
+          "Old Goa - Historic churches.",
+          "Dudhsagar Falls - Stunning waterfall.",
+          "Calangute Beach - Vibrant atmosphere.",
+          "Mapusa Market - Local goods.",
+          "Colva Beach - White sands."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/goa-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-goa"
+      },
+      "gujarat": {
+        capital: "Gandhinagar",
+        location: "Western India, bordered by Rajasthan, Madhya Pradesh, Maharashtra, and the Arabian Sea.",
+        bestTime: "November to February",
+        days: "6-8 days",
+        description: "Gujarat, in Western India, blends history, culture, and natural wonders. The Rann of Kutch’s white salt desert dazzles, while Gir National Park shelters Asiatic lions. Ahmedabad’s Sabarmati Ashram reflects Gandhi’s legacy, and Dwarka’s ancient temples draw pilgrims. Vibrant Navratri celebrations, delicious cuisine, and the serene Saputara hill station make Gujarat a diverse and captivating travel destination.",
+        topPlaces: [
+          "Rann of Kutch - White salt desert.",
+          "Ahmedabad - Sabarmati Ashram.",
+          "Gir National Park - Asiatic lions.",
+          "Dwarka - Dwarkadhish Temple.",
+          "Somnath - Somnath Temple.",
+          "Vadodara - Laxmi Vilas Palace.",
+          "Champaner-Pavagadh - UNESCO site.",
+          "Bhuj - Gateway to Rann.",
+          "Junagadh - Girnar Hills.",
+          "Saputara - Scenic hill station."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/gujarat-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-gujarat"
+      },
+      "haryana": {
+        capital: "Chandigarh",
+        location: "Northern India, surrounding Delhi and bordered by Punjab, Himachal Pradesh, and Uttar Pradesh.",
+        bestTime: "October to March",
+        days: "3-5 days",
+        description: "Haryana, in Northern India, blends modernity with tradition, offering a mix of urban and rural charm. Chandigarh, its planned capital, boasts the Rock Garden, while Kurukshetra holds Mahabharata significance. Gurgaon’s Kingdom of Dreams dazzles, and Murthal’s dhabas serve authentic Punjabi cuisine. Historical sites like Panipat and scenic Sohna hot springs make Haryana a diverse and engaging destination.",
+        topPlaces: [
+          "Kurukshetra - Mahabharata site.",
+          "Chandigarh - Rock Garden.",
+          "Gurgaon - Kingdom of Dreams.",
+          "Panipat - Historic battlefields.",
+          "Faridabad - Surajkund Mela.",
+          "Pinjore - Yadavindra Gardens.",
+          "Karnal - Historic fort.",
+          "Hisar - Ancient mounds.",
+          "Murthal - Iconic dhabas.",
+          "Sohna - Hot springs."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/haryana-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-haryana"
+      },
+      "himachal pradesh": {
+        capital: "Shimla",
+        location: "Northern India, bordered by Jammu and Kashmir, Punjab, Haryana, Uttarakhand, and Tibet.",
+        bestTime: "March to June, September to December",
+        days: "6-9 days",
+        description: "Himachal Pradesh, a Himalayan haven in Northern India, enchants with its snow-capped peaks and lush valleys. Shimla’s colonial charm, Manali’s adventure sports, and Dharamshala’s Tibetan culture captivate travelers. Spiti Valley’s rugged beauty and Kullu’s river rafting add thrill, while serene Dalhousie and McLeod Ganj offer tranquility, making Himachal a perfect escape for nature lovers and adventurers alike.",
+        topPlaces: [
+          "Shimla - Colonial charm.",
+          "Manali - Rohtang Pass.",
+          "Dharamshala - Dalai Lama’s home.",
+          "Kullu - River rafting.",
+          "Spiti Valley - Remote desert.",
+          "Dalhousie - Scenic beauty.",
+          "McLeod Ganj - Tibetan culture.",
+          "Kasauli - Colonial vibes.",
+          "Chamba - Ancient temples.",
+          "Kinnaur - Apple orchards."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/himachal_pradesh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-himachal-pradesh"
+      },
+      "jharkhand": {
+        capital: "Ranchi",
+        location: "Eastern India, bordered by Bihar, Uttar Pradesh, Chhattisgarh, Odisha, and West Bengal.",
+        bestTime: "October to March",
+        days: "4-6 days",
+        description: "Jharkhand, in Eastern India, is a land of lush forests, cascading waterfalls, and tribal heritage. Ranchi’s scenic hills and Dassam Falls offer natural beauty, while Betla National Park is a wildlife haven. Deoghar’s Baidyanath Temple attracts pilgrims, and Netarhat, the ‘Queen of Chotanagpur’, provides serene views, making Jharkhand a perfect blend of nature, spirituality, and cultural richness.",
+        topPlaces: [
+          "Ranchi - Ranchi Lake.",
+          "Betla National Park - Wildlife.",
+          "Deoghar - Baidyanath Temple.",
+          "Jamshedpur - Jubilee Park.",
+          "Hazaribagh - National park.",
+          "Dassam Falls - Near Ranchi.",
+          "Netarhat - Hill station.",
+          "Rajrappa - Chhinnamasta Temple.",
+          "Palamu - Historic forts.",
+          "Giridih - Jain sites."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/jharkhand-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-jharkhand"
+      },
+      "karnataka": {
+        capital: "Bengaluru",
+        location: "Southwestern India, bordered by Goa, Maharashtra, Telangana, Andhra Pradesh, Tamil Nadu, Kerala, and the Arabian Sea.",
+        bestTime: "October to March",
+        days: "6-8 days",
+        description: "Karnataka, in Southwestern India, is a vibrant mix of history, nature, and modernity. Bengaluru’s tech hub buzzes with energy, while Hampi’s UNESCO ruins narrate ancient tales. Mysore Palace dazzles, Coorg’s coffee plantations enchant, and Gokarna’s beaches offer serenity. With Jog Falls and Badami’s cave temples, Karnataka seamlessly blends cultural heritage, natural beauty, and urban sophistication for every traveler.",
+        topPlaces: [
+          "Hampi - UNESCO ruins.",
+          "Mysore - Mysore Palace.",
+          "Bengaluru - Tech hub.",
+          "Coorg - Coffee plantations.",
+          "Gokarna - Serene beaches.",
+          "Badami - Cave temples.",
+          "Bandipur National Park - Wildlife.",
+          "Udupi - Krishna Temple.",
+          "Chikmagalur - Coffee estates.",
+          "Jog Falls - High waterfall."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/karnataka-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-karnataka"
+      },
+      "kerala": {
+        capital: "Thiruvananthapuram",
+        location: "Southwestern tip of India, bordered by Karnataka, Tamil Nadu, and the Arabian Sea.",
+        bestTime: "September to March",
+        days: "6-9 days",
+        description: "Kerala, at India’s southwestern tip, is a tropical paradise famed for its serene backwaters, lush greenery, and Ayurvedic retreats. Alleppey’s houseboat cruises, Munnar’s tea plantations, and Kochi’s colonial charm captivate visitors. Varkala’s dramatic cliffs and Thekkady’s wildlife sanctuary add adventure, while Kovalam’s beaches offer relaxation, making Kerala a perfect blend of nature, culture, and wellness experiences.",
+        topPlaces: [
+          "Alleppey - Backwater cruises.",
+          "Munnar - Tea plantations.",
+          "Kochi - Fort Kochi.",
+          "Varkala - Dramatic cliffs.",
+          "Thekkady - Periyar National Park.",
+          "Kovalam - Crescent beaches.",
+          "Wayanad - Edakkal Caves.",
+          "Thiruvananthapuram - Padmanabhaswamy Temple.",
+          "Kumarakom - Backwater tourism.",
+          "Thrissur - Pooram festival."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/kerala-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-kerala"
+      },
+      "madhya pradesh": {
+        capital: "Bhopal",
+        location: "Central India, bordered by Uttar Pradesh, Chhattisgarh, Maharashtra, Gujarat, and Rajasthan.",
+        bestTime: "October to March",
+        days: "6-8 days",
+        description: "Madhya Pradesh, the heart of India, boasts a rich historical legacy with UNESCO sites like Khajuraho’s erotic temples and Sanchi’s Buddhist stupas. Bhopal’s serene lakes, Gwalior’s majestic fort, and Orchha’s riverside palaces enchant visitors. Wildlife thrives in Bandhavgarh and Kanha National Parks, while Ujjain’s spiritual aura and Pachmarhi’s lush hills make it a diverse and captivating destination.",
+        topPlaces: [
+          "Khajuraho - Erotic temples.",
+          "Sanchi - Buddhist stupas.",
+          "Gwalior - Historic fort.",
+          "Bhopal - Upper Lake.",
+          "Orchha - Riverside temples.",
+          "Bandhavgarh - Tiger reserve.",
+          "Kanha National Park - Wildlife.",
+          "Ujjain - Mahakaleshwar Temple.",
+          "Mandu - Afghan architecture.",
+          "Pachmarhi - Hill station."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/madhya_pradesh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-madhya-pradesh"
+      },
+      "maharashtra": {
+        capital: "Mumbai",
+        location: "Western India, bordered by Gujarat, Madhya Pradesh, Chhattisgarh, Telangana, Karnataka, Goa, and the Arabian Sea.",
+        bestTime: "October to March",
+        days: "6-9 days",
+        description: "Maharashtra, in Western India, blends bustling Mumbai’s urban vibe with historical treasures. The Gateway of India and UNESCO-listed Ajanta-Ellora Caves showcase its heritage. Pune’s cultural richness, Mahabaleshwar’s scenic viewpoints, and Lonavala’s lush hills offer diverse experiences. Shirdi’s spiritual allure and Tarkarli’s pristine beaches make Maharashtra a dynamic destination for history buffs, nature lovers, and adventure seekers.",
+        topPlaces: [
+          "Mumbai - Gateway of India.",
+          "Ajanta & Ellora - UNESCO caves.",
+          "Pune - Aga Khan Palace.",
+          "Mahabaleshwar - Scenic viewpoints.",
+          "Lonavala - Lush hills.",
+          "Nashik - Kalaram Temple.",
+          "Aurangabad - Gateway to caves.",
+          "Shirdi - Sai Baba Temple.",
+          "Tarkarli - Pristine beaches.",
+          "Matheran - Car-free hill station."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/maharashtra-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-maharashtra"
+      },
+      "manipur": {
+        capital: "Imphal",
+        location: "Northeastern India, bordered by Nagaland, Mizoram, Assam, and Myanmar.",
+        bestTime: "October to April",
+        days: "5-7 days",
+        description: "Manipur, in India’s Northeast, is a cultural haven known for its unique Loktak Lake with floating phumdis. Imphal’s Kangla Fort reflects its royal past, while Keibul Lamjao National Park shelters the endangered Sangai deer. Ukhrul’s Shirui Lily blooms captivate, and tribal traditions in Churachandpur add depth, making Manipur a blend of natural beauty and cultural richness.",
+        topPlaces: [
+          "Loktak Lake - Floating phumdis.",
+          "Imphal - Kangla Fort.",
+          "Keibul Lamjao - Floating park.",
+          "Moreh - Border town.",
+          "Ukhrul - Shirui Lily.",
+          "Senapati - Lush greenery.",
+          "Thoubal - Cultural heritage.",
+          "Bishnupur - Terracotta temples.",
+          "Tamenglong - Orange orchards.",
+          "Churachandpur - Tribal traditions."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/manipur-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-manipur"
+      },
+      "meghalaya": {
+        capital: "Shillong",
+        location: "Northeastern India, bordered by Assam and Bangladesh.",
+        bestTime: "October to April",
+        days: "5-7 days",
+        description: "Meghalaya, meaning ‘abode of clouds’, is a Northeastern gem with cascading waterfalls and living root bridges. Shillong’s scenic hills, Cherrapunji’s record rainfall, and Mawlynnong’s title as Asia’s cleanest village enchant visitors. Dawki’s crystal-clear Umngot River and Nohkalikai Falls add natural splendor, while cultural festivals in Jowai offer a glimpse into the state’s rich Khasi, Garo, and Jaintia traditions.",
+        topPlaces: [
+          "Shillong - Scenic hills.",
+          "Cherrapunji - Living root bridges.",
+          "Mawlynnong - Asia’s cleanest village.",
+          "Dawki - Crystal-clear river.",
+          "Nohkalikai Falls - Tall waterfall.",
+          "Mawsynram - Wettest place.",
+          "Laitlum Canyons - Valley views.",
+          "Jowai - Cultural festivals.",
+          "Balpakram - Biodiversity hotspot.",
+          "Tura - Garo Hills."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/meghalaya-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-meghalaya"
+      },
+      "mizoram": {
+        capital: "Aizawl",
+        location: "Northeastern India, bordered by Tripura, Assam, Manipur, Bangladesh, and Myanmar.",
+        bestTime: "October to March",
+        days: "5-7 days",
+        description: "Mizoram, in India’s Northeast, is a serene escape with rolling hills and vibrant Mizo culture. Aizawl’s panoramic views, Vantawng Falls, and Phawngpui, the Blue Mountain, offer natural beauty. Champhai’s cliff-top vistas and Tam Dil lake provide tranquility, while Lunglei’s cultural heritage and festivals like Chapchar Kut showcase Mizoram’s traditions, making it a hidden gem for travelers.",
+        topPlaces: [
+          "Aizawl - Scenic hills.",
+          "Lunglei - Cultural heritage.",
+          "Champhai - Cliff views.",
+          "Vantawng Falls - Highest waterfall.",
+          "Phawngpui - Blue Mountain.",
+          "Saiha - Serene lakes.",
+          "Hmuifang - Hill station.",
+          "Reiek - Panoramic views.",
+          "Tam Dil - Serene lake.",
+          "Serchhip - Cultural festivals."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/mizoram-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-mizoram"
+      },
+      "nagaland": {
+        capital: "Kohima",
+        location: "Northeastern India, bordered by Assam, Arunachal Pradesh, Manipur, and Myanmar.",
+        bestTime: "October to April",
+        days: "5-7 days",
+        description: "Nagaland, in India’s Northeast, is a cultural mosaic of 16 major tribes, famous for the Hornbill Festival. Kohima’s War Cemetery honors WWII history, while Dzukou Valley’s blooms attract trekkers. Dimapur’s ancient ruins and Mon’s Konyak tribe offer historical depth. With Khonoma’s green village ethos, Nagaland blends natural beauty, tribal traditions, and a warm, welcoming spirit.",
+        topPlaces: [
+          "Kohima - War Cemetery.",
+          "Dimapur - Historical ruins.",
+          "Mokokchung - Ao culture.",
+          "Wokha - Lotha tribe.",
+          "Mon - Konyak tribe.",
+          "Phek - Serene landscapes.",
+          "Zunheboto - Sumi tribe.",
+          "Dzukou Valley - Trekking paradise.",
+          "Khonoma - Green village.",
+          "Tuophema - Traditional huts."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/nagaland-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-nagaland"
+      },
+      "odisha": {
+        capital: "Bhubaneswar",
+        location: "Eastern India, bordered by West Bengal, Jharkhand, Chhattisgarh, Andhra Pradesh, and the Bay of Bengal.",
+        bestTime: "October to March",
+        days: "5-7 days",
+        description: "Odisha, on India’s eastern coast, is a land of ancient temples and pristine beaches. Bhubaneswar’s Lingaraj Temple and Konark’s Sun Temple, a UNESCO site, showcase architectural brilliance. Puri’s Jagannath Temple draws pilgrims, while Chilika Lake’s biodiversity and Gopalpur’s serene shores offer natural beauty. Odisha’s rich culture, vibrant festivals, and historical depth make it a captivating destination.",
+        topPlaces: [
+          "Puri - Jagannath Temple.",
+          "Bhubaneswar - Temple City.",
+          "Konark - Sun Temple.",
+          "Cuttack - Durga Puja.",
+          "Chilika Lake - Brackish lagoon.",
+          "Simlipal - Tiger reserve.",
+          "Dhauli - Peace pagoda.",
+          "Gopalpur - Serene beach.",
+          "Koraput - Tribal culture.",
+          "Rourkela - Steel city."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/odisha-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-odisha"
+      },
+      "punjab": {
+        capital: "Chandigarh",
+        location: "Northern India, bordered by Jammu and Kashmir, Himachal Pradesh, Haryana, Rajasthan, and Pakistan.",
+        bestTime: "October to March",
+        days: "4-6 days",
+        description: "Punjab, in Northern India, is the heart of Sikh culture, with Amritsar’s Golden Temple as its spiritual centerpiece. Chandigarh’s modern architecture, including Sukhna Lake, contrasts with Patiala’s royal heritage. Known for vibrant bhangra dance, delicious cuisine like butter chicken, and historical sites like Anandpur Sahib, Punjab offers a lively mix of tradition, history, and warm hospitality.",
+        topPlaces: [
+          "Amritsar - Golden Temple.",
+          "Chandigarh - Sukhna Lake.",
+          "Ludhiana - Textile industry.",
+          "Jalandhar - Sports industry.",
+          "Patiala - Qila Mubarak.",
+          "Bathinda - Historic forts.",
+          "Anandpur Sahib - Gurdwaras.",
+          "Hoshiarpur - Museums.",
+          "Rupnagar - Ancient ruins.",
+          "Mohali - Cricket stadium."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/punjab-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-punjab"
+      },
+      "rajasthan": {
+        capital: "Jaipur",
+        location: "Northwestern India, bordered by Punjab, Haryana, Uttar Pradesh, Madhya Pradesh, Gujarat, and Pakistan.",
+        bestTime: "October to March",
+        days: "7-10 days",
+        description: "Rajasthan, in Northwestern India, is a regal land of forts, palaces, and deserts. Jaipur’s Amber Fort, Udaipur’s Lake Pichola, and Jaisalmer’s golden sands captivate visitors. Jodhpur’s Mehrangarh Fort looms majestically, while Pushkar’s sacred lake draws pilgrims. With vibrant festivals, rich handicrafts, and Ranthambore’s tigers, Rajasthan offers a royal journey through history, culture, and natural beauty.",
+        topPlaces: [
+          "Jaipur - Amber Fort.",
+          "Udaipur - Lake Pichola.",
+          "Jodhpur - Mehrangarh Fort.",
+          "Jaisalmer - Golden Fort.",
+          "Pushkar - Sacred lake.",
+          "Bikaner - Junagarh Fort.",
+          "Ajmer - Dargah Sharif.",
+          "Mount Abu - Hill station.",
+          "Chittorgarh - Massive fort.",
+          "Ranthambore - Tiger reserve."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/rajasthan-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-rajasthan"
+      },
+      "sikkim": {
+        capital: "Gangtok",
+        location: "Northeastern India, bordered by Bhutan, Nepal, Tibet, and West Bengal.",
+        bestTime: "March to June, September to December",
+        days: "5-7 days",
+        description: "Sikkim, a Himalayan gem in India’s Northeast, mesmerizes with its snow-capped peaks and serene monasteries. Gangtok’s Rumtek Monastery and Tsomgo Lake offer spiritual and natural beauty. Pelling’s Kanchenjunga views, Lachung’s Yumthang Valley, and Gurudongmar Lake’s high-altitude charm captivate adventurers. With rich Buddhist heritage and vibrant festivals, Sikkim is a tranquil escape for nature and culture lovers.",
+        topPlaces: [
+          "Gangtok - Rumtek Monastery.",
+          "Pelling - Kanchenjunga views.",
+          "Lachung - Yumthang Valley.",
+          "Tsomgo Lake - High-altitude lake.",
+          "Namchi - Char Dham.",
+          "Ravangla - Buddha Park.",
+          "Zuluk - Himalayan vistas.",
+          "Gurudongmar Lake - High lake.",
+          "Yuksom - Historic monasteries.",
+          "Lachen - Chopta Valley."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/sikkim-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-sikkim"
+      },
+      "tamil nadu": {
+        capital: "Chennai",
+        location: "Southeastern India, bordered by Andhra Pradesh, Karnataka, Kerala, and the Bay of Bengal.",
+        bestTime: "November to February",
+        days: "6-9 days",
+        description: "Tamil Nadu, in Southeastern India, is a cultural powerhouse with ancient Dravidian temples and vibrant traditions. Chennai’s Marina Beach, Madurai’s Meenakshi Temple, and Thanjavur’s Brihadeeswara Temple showcase architectural brilliance. Kanyakumari’s sunrise at India’s southern tip and Ooty’s misty hills offer natural beauty. With classical dance, spicy cuisine, and historical depth, Tamil Nadu promises a rich and diverse experience.",
+        topPlaces: [
+          "Chennai - Marina Beach.",
+          "Madurai - Meenakshi Temple.",
+          "Mahabalipuram - Shore temples.",
+          "Kanyakumari - Southernmost tip.",
+          "Ooty - Botanical gardens.",
+          "Rameswaram - Ramanathaswamy Temple.",
+          "Coimbatore - Textile industry.",
+          "Thanjavur - Brihadeeswara Temple.",
+          "Kodaikanal - Scenic lakes.",
+          "Tiruchirappalli - Rock Fort."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/tamil_nadu-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-tamil-nadu"
+      },
+      "telangana": {
+        capital: "Hyderabad",
+        location: "South-central India, bordered by Andhra Pradesh, Karnataka, Maharashtra, and Chhattisgarh.",
+        bestTime: "October to March",
+        days: "5-7 days",
+        description: "Telangana, in South-central India, blends historical grandeur with modernity. Hyderabad’s Charminar and Golconda Fort reflect its Nizami past, while Warangal’s Thousand Pillar Temple showcases Kakatiya architecture. Srisailam’s spiritual aura and Bhongir’s hilltop fort add diversity. With vibrant festivals, spicy Hyderabadi biryani, and scenic waterfalls in Adilabad, Telangana offers a rich cultural and historical journey for travelers.",
+        topPlaces: [
+          "Hyderabad - Charminar.",
+          "Warangal - Historic fort.",
+          "Medak - Historic cathedral.",
+          "Nizamabad - Nizamabad Fort.",
+          "Khammam - Natural beauty.",
+          "Adilabad - Waterfalls.",
+          "Karimnagar - Elgandal Fort.",
+          "Mahbubnagar - Banyan Tree.",
+          "Srisailam - Mallikarjuna Temple.",
+          "Bhongir - Hilltop fort."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/telangana-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-telangana"
+      },
+      "tripura": {
+        capital: "Agartala",
+        location: "Northeastern India, bordered by Assam, Mizoram, and Bangladesh.",
+        bestTime: "October to March",
+        days: "4-6 days",
+        description: "Tripura, in India’s Northeast, is a land of royal heritage and natural beauty. Agartala’s Ujjayanta Palace and Neermahal, a water palace, reflect its regal past. Unakoti’s ancient rock carvings and Jampui Hills’ orange orchards captivate visitors. With Sepahijala’s wildlife sanctuary and vibrant tribal culture in Ambassa, Tripura offers a serene blend of history, nature, and cultural diversity.",
+        topPlaces: [
+          "Agartala - Ujjayanta Palace.",
+          "Unakoti - Rock carvings.",
+          "Neermahal - Water palace.",
+          "Kailashahar - Tea gardens.",
+          "Dharmanagar - Scenic beauty.",
+          "Jampui Hills - Orange orchards.",
+          "Udaipur - Bhuvaneswari Temple.",
+          "Sepahijala - Wildlife sanctuary.",
+          "Ambassa - Tribal culture.",
+          "Dumbur Lake - Scenic lake."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/tripura-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-tripura"
+      },
+      "uttar pradesh": {
+        capital: "Lucknow",
+        location: "Northern India, bordered by Uttarakhand, Himachal Pradesh, Haryana, Rajasthan, Madhya Pradesh, Chhattisgarh, Jharkhand, Bihar, and Nepal.",
+        bestTime: "October to March",
+        days: "7-10 days",
+        description: "Uttar Pradesh, in Northern India, is a spiritual and historical epicenter. Agra’s Taj Mahal, a UNESCO wonder, and Varanasi’s sacred Ganga Aarti draw millions. Lucknow’s Bara Imambara reflects Mughal grandeur, while Mathura and Ayodhya hold religious significance. With Allahabad’s Kumbh Mela and Sarnath’s Buddhist heritage, UP offers a profound journey through India’s cultural and spiritual heart.",
+        topPlaces: [
+          "Agra - Taj Mahal.",
+          "Varanasi - Ganga Aarti.",
+          "Lucknow - Bara Imambara.",
+          "Mathura - Krishna’s birthplace.",
+          "Allahabad - Kumbh Mela.",
+          "Ayodhya - Rama’s birthplace.",
+          "Vrindavan - ISKCON temples.",
+          "Jhansi - Historic fort.",
+          "Sarnath - Buddha’s sermon.",
+          "Fatehpur Sikri - Mughal architecture."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/uttar_pradesh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-uttar-pradesh"
+      },
+      "uttarakhand": {
+        capital: "Dehradun",
+        location: "Northern India, bordered by Uttar Pradesh, Himachal Pradesh, Haryana, and Tibet and Nepal.",
+        bestTime: "March to June, September to November",
+        days: "6-9 days",
+        description: "Uttarakhand, in Northern India, is a Himalayan haven known for spiritual and natural splendor. Rishikesh and Haridwar offer sacred Ganges experiences, while Nainital’s lakes and Mussoorie’s hills provide serenity. Kedarnath and Badrinath attract pilgrims, and Auli’s slopes thrill skiers. With Jim Corbett’s tigers and the Valley of Flowers, Uttarakhand blends adventure, spirituality, and breathtaking landscapes for all travelers.",
+        topPlaces: [
+          "Rishikesh - Yoga and Ganges.",
+          "Haridwar - Ganga Aarti.",
+          "Mussoorie - Queen of Hills.",
+          "Nainital - Naini Lake.",
+          "Kedarnath - Char Dham site.",
+          "Badrinath - Char Dham temple.",
+          "Auli - Skiing destination.",
+          "Jim Corbett - Tiger reserve.",
+          "Valley of Flowers - UNESCO site.",
+          "Dehradun - Robber’s Cave."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/uttarakhand-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-uttarakhand"
+      },
+      "west bengal": {
+        capital: "Kolkata",
+        location: "Eastern India, bordered by Sikkim, Bhutan, Assam, Jharkhand, Odisha, and Bangladesh.",
+        bestTime: "October to March",
+        days: "6-8 days",
+        description: "West Bengal, in Eastern India, is a cultural hub with Kolkata’s colonial Victoria Memorial and vibrant Durga Puja celebrations. Darjeeling’s tea gardens and the Sundarbans’ Bengal tigers offer natural wonders. Shantiniketan’s Tagore legacy, Bishnupur’s terracotta temples, and Digha’s beaches add diversity. With rich literature, arts, and cuisine, West Bengal promises a deep dive into India’s cultural heritage.",
+        topPlaces: [
+          "Kolkata - Victoria Memorial.",
+          "Darjeeling - Tea gardens.",
+          "Sundarbans - Bengal Tigers.",
+          "Murshidabad - Mughal monuments.",
+          "Digha - Popular beach.",
+          "Shantiniketan - Tagore’s hub.",
+          "Kalimpong - Buddhist monasteries.",
+          "Bishnupur - Terracotta temples.",
+          "Siliguri - Tea estates.",
+          "Cooch Behar - Royal palace."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/west_bengal-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-west-bengal"
+      },
+      "andaman and nicobar islands": {
+        capital: "Port Blair",
+        location: "Bay of Bengal, southeast of mainland India, near Thailand and Myanmar.",
+        bestTime: "November to April",
+        days: "5-7 days",
+        description: "The Andaman and Nicobar Islands, in the Bay of Bengal, are a tropical paradise with pristine beaches and vibrant coral reefs. Port Blair’s Cellular Jail narrates history, while Havelock’s Radhanagar Beach and Neil Island’s marine life mesmerize. Baratang’s limestone caves and Jolly Buoy’s snorkeling spots offer adventure, making this archipelago a haven for nature lovers and history buffs.",
+        topPlaces: [
+          "Port Blair - Cellular Jail.",
+          "Havelock Island - Radhanagar Beach.",
+          "Neil Island - Coral reefs.",
+          "Ross Island - Colonial ruins.",
+          "Baratang - Limestone caves.",
+          "Little Andaman - Surfing spot.",
+          "Diglipur - Saddle Peak.",
+          "North Bay - Snorkeling.",
+          "Chidiya Tapu - Birdwatching.",
+          "Jolly Buoy - Coral reefs."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/andaman-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-andaman-and-nicobar"
+      },
+      "chandigarh": {
+        capital: "Chandigarh",
+        location: "Northern India, serving as the capital of Punjab and Haryana, bordered by Himachal Pradesh.",
+        bestTime: "October to March",
+        days: "2-4 days",
+        description: "Chandigarh, a Union Territory in Northern India, is India’s first planned city, known for its modernist architecture. The Rock Garden’s artistic sculptures, Sukhna Lake’s serene boating, and the Capitol Complex, a UNESCO site, highlight its charm. With lush green spaces like Leisure Valley and vibrant markets, Chandigarh offers a perfect blend of urban design, culture, and tranquility.",
+        topPlaces: [
+          "Rock Garden - Sculpture garden.",
+          "Sukhna Lake - Boating spot.",
+          "Rose Garden - Vibrant blooms.",
+          "Capitol Complex - UNESCO site.",
+          "Leisure Valley - Green corridor.",
+          "Elante Mall - Shopping hub.",
+          "Architecture Museum - Design history.",
+          "Terraced Garden - Relaxation spot.",
+          "Cactus Garden - Cactus species.",
+          "Pinjore Gardens - Mughal style."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/chandigarh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-chandigarh"
+      },
+      "dadra and nagar haveli and daman and diu": {
+        capital: "Daman",
+        location: "Western India, bordered by Gujarat, Maharashtra, and the Arabian Sea.",
+        bestTime: "November to February",
+        days: "3-5 days",
+        description: "Dadra and Nagar Haveli and Daman and Diu, in Western India, offer a blend of Portuguese heritage and coastal beauty. Diu Fort and Nagoa Beach provide historical and scenic allure, while Satmalia’s deer sanctuary and Naida Caves offer nature’s charm. With vibrant festivals, serene lakes like Vanganga, and cultural museums, this Union Territory promises a relaxing and enriching escape.",
+        topPlaces: [
+          "Diu Fort - Sea views.",
+          "Nagoa Beach - Water sports.",
+          "Vanganga Lake - Tranquil spot.",
+          "Naida Caves - Rock formations.",
+          "Satmalia - Deer sanctuary.",
+          "Jampore Beach - Black sand.",
+          "Swaminarayan Temple - Stunning temple.",
+          "Tapovan - Boating spot.",
+          "Nakshatra Garden - Star-themed.",
+          "Tribal Museum - Heritage showcase."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/dadra_and_nagar_haveli_and_daman_and_diu-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-dadra-and-nagar-haveli-and-daman-and-diu"
+      },
+      "delhi": {
+        capital: "New Delhi",
+        location: "Northern India, bordered by Haryana, Uttar Pradesh, and Rajasthan.",
+        bestTime: "October to March",
+        days: "4-6 days",
+        description: "Delhi, India’s capital, seamlessly blends Mughal and colonial history with modernity. The Red Fort and Qutub Minar narrate its past, while India Gate and Lotus Temple reflect its diversity. Bustling Chandni Chowk offers street food, and Akshardham’s grandeur inspires awe. With vibrant markets and cultural landmarks, Delhi is a dynamic gateway to India’s rich heritage.",
+        topPlaces: [
+          "Red Fort - Mughal architecture.",
+          "India Gate - War memorial.",
+          "Qutub Minar - UNESCO tower.",
+          "Lotus Temple - Unique design.",
+          "Akshardham - Modern temple.",
+          "Humayun’s Tomb - Mughal masterpiece.",
+          "Jama Masjid - Largest mosque.",
+          "Connaught Place - Shopping hub.",
+          "Chandni Chowk - Street food.",
+          "Rashtrapati Bhavan - Mughal gardens."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/delhi-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-delhi"
+      },
+      "jammu and kashmir": {
+        capital: "Srinagar (Summer), Jammu (Winter)",
+        location: "Northern India, bordered by Himachal Pradesh, Punjab, Ladakh, and Pakistan.",
+        bestTime: "April to October",
+        days: "6-8 days",
+        description: "Jammu and Kashmir, in Northern India, is a Himalayan paradise with breathtaking landscapes. Srinagar’s Dal Lake houseboats, Gulmarg’s skiing slopes, and Pahalgam’s lush valleys enchant visitors. Jammu’s Vaishno Devi shrine draws pilgrims, while Sonamarg’s golden meadows and Amarnath Cave’s spiritual aura add depth. This region offers a perfect mix of adventure, serenity, and cultural richness.",
+        topPlaces: [
+          "Srinagar - Dal Lake.",
+          "Gulmarg - Skiing destination.",
+          "Pahalgam - Lidder River.",
+          "Jammu - Vaishno Devi.",
+          "Sonamarg - Meadow of Gold.",
+          "Leh - Monasteries.",
+          "Katra - Pilgrimage base.",
+          "Betaab Valley - Picturesque.",
+          "Amarnath Cave - Sacred temple.",
+          "Shankaracharya Temple - Hilltop."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/kashmir-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-jammu-and-kashmir"
+      },
+      "ladakh": {
+        capital: "Leh",
+        location: "Northern India, bordered by Jammu and Kashmir, Himachal Pradesh, Tibet, and Pakistan.",
+        bestTime: "May to September",
+        days: "6-8 days",
+        description: "Ladakh, in Northern India, is a high-altitude desert with stark, mesmerizing landscapes. Leh’s ancient monasteries, Nubra Valley’s sand dunes, and Pangong Lake’s vibrant hues captivate travelers. Hemis Monastery’s festivals and Khardung La’s thrilling pass offer adventure, while Shanti Stupa provides peace. With its Buddhist heritage and rugged beauty, Ladakh is a haven for explorers and spiritual seekers.",
+        topPlaces: [
+          "Leh - Leh Palace.",
+          "Nubra Valley - Sand dunes.",
+          "Pangong Lake - Stunning colors.",
+          "Hemis Monastery - Annual festivals.",
+          "Diskit - Maitreya Buddha.",
+          "Tso Moriri - High-altitude lake.",
+          "Magnetic Hill - Optical illusion.",
+          "Shanti Stupa - Peace pagoda.",
+          "Khardung La - High pass.",
+          "Zanskar Valley - Trekking."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/ladakh-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-ladakh"
+      },
+      "lakshadweep": {
+        capital: "Kavaratti",
+        location: "Laccadive Sea, southwest of mainland India, near the Maldives.",
+        bestTime: "October to April",
+        days: "5-7 days",
+        description: "Lakshadweep, in the Laccadive Sea, is a tropical archipelago with turquoise lagoons and coral reefs. Kavaratti’s marine beauty, Agatti’s snorkeling spots, and Bangaram’s glowing beaches offer paradise-like escapes. Kadmat and Kalpeni provide diving adventures, while Minicoy’s lighthouse adds historical charm. With pristine waters and rich marine life, Lakshadweep is a serene haven for beach lovers and adventurers.",
+        topPlaces: [
+          "Kavaratti - Stunning lagoons.",
+          "Agatti - Coral reefs.",
+          "Bangaram - Glowing beaches.",
+          "Minicoy - Lighthouse.",
+          "Kadmat - Scuba diving.",
+          "Kalpeni - Coral atolls.",
+          "Andrott - Historical significance.",
+          "Amini - Coral beaches.",
+          "Bitra - Marine biodiversity.",
+          "Chetlat - Pristine beaches."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/lakshadweep-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-lakshadweep"
+      },
+      "puducherry": {
+        capital: "Puducherry",
+        location: "Southeastern India, enclaves within Tamil Nadu, Kerala, and Andhra Pradesh.",
+        bestTime: "October to March",
+        days: "3-5 days",
+        description: "Puducherry, a Union Territory in Southeastern India, is a charming blend of French colonial heritage and Indian culture. The French Quarter’s pastel streets, Promenade Beach’s serene vibe, and Aurobindo Ashram’s spiritual aura enchant visitors. Auroville’s Matrimandir promotes unity, while Paradise Beach offers tranquility. With vibrant cafes and cultural fusion, Puducherry is a delightful coastal escape.",
+        topPlaces: [
+          "Promenade Beach - French vibes.",
+          "Aurobindo Ashram - Spiritual center.",
+          "Auroville - Matrimandir.",
+          "Paradise Beach - Serene spot.",
+          "French Quarter - Colonial cafes.",
+          "Chunnambar - Backwater boating.",
+          "Sacred Heart Basilica - Gothic church.",
+          "Puducherry Museum - Local history.",
+          "Ousteri Lake - Birdwatching.",
+          "Serenity Beach - Surfing spot."
+        ],
+        makeMyTripLink: "https://www.makemytrip.com/holidays-india/puducherry-travel-packages.html",
+        yatraLink: "https://www.yatra.com/india-tour-packages/holidays-in-puducherry"
+      }
+    };
+
+    function searchState() {
+      const input = document.getElementById("stateInput").value.toLowerCase().trim();
+      const resultBox = document.getElementById("resultBox");
+      const stateName = document.getElementById("stateName");
+      const capital = document.getElementById("capital");
+      const location = document.getElementById("location");
+      const bestTime = document.getElementById("bestTime");
+      const days = document.getElementById("days");
+      const description = document.getElementById("description");
+      const topPlaces = document.getElementById("topPlaces");
+      const makeMyTripLink = document.getElementById("makeMyTripLink");
+      const yatraLink = document.getElementById("yatraLink");
+
+      if (states[input]) {
+        stateName.textContent = input.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+        capital.textContent = states[input].capital;
+        location.textContent = states[input].location;
+        bestTime.textContent = states[input].bestTime;
+        days.textContent = states[input].days;
+        description.textContent = states[input].description;
+        
+        topPlaces.innerHTML = "";
+        states[input].topPlaces.forEach(place => {
+          const li = document.createElement("li");
+          li.textContent = place;
+          topPlaces.appendChild(li);
+        });
+
+        makeMyTripLink.href = states[input].makeMyTripLink;
+        yatraLink.href = states[input].yatraLink;
+
+        resultBox.style.display = "block";
+      } else {
+        resultBox.style.display = "none";
+        alert("State or Union Territory not found. Please enter a valid name.");
+      }
+    }
+  </script>
+</body>
+</html>
